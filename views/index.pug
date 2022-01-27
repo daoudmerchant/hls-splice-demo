@@ -7,13 +7,16 @@ block content
   form(method='POST' action='')
     div
       label(for='content') Content:
-      input#content(type='text', placeholder='Paste main .m3u8 link here' value='https://maitv-vod.lab.eyevinn.technology/VINN.mp4/master.m3u8' name='content' required='true')
+      input#content(type='text', placeholder='Paste main .m3u8 link here' value=(content || 'https://maitv-vod.lab.eyevinn.technology/VINN.mp4/master.m3u8') name='content' required='true')
       label(for='ad') Ad:
-      input#ad(type='text', placeholder='Paste advert .m3u8 link here' value='https://maitv-vod.lab.eyevinn.technology/ads/apotea-15s.mp4/master.m3u8' name='ad' required='true')
+      input#ad(type='text', placeholder='Paste advert .m3u8 link here' value=(ad || 'https://maitv-vod.lab.eyevinn.technology/ads/apotea-15s.mp4/master.m3u8') name='ad' required='true')
       fieldset
         legend Insertion point
         label(for='time') Time:
-        input#time(type='number' min=1 value=35000 placeholder='In microseconds, seconds or minutes' name='time' required='true')
+        input#time(type='number' min=1 value=(time || 35000) placeholder='In microseconds, seconds or minutes' name='time' required='true')
       button(type='submit') Generate spliced manifest link
-  
-  block result
+
+  if errors
+    ul
+      for error in errors
+        li= error.msg
