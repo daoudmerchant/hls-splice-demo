@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  h1 HLS Splice 
+  h1 HLS Spliced Manifest Generator
   p Daoud Merchant
 
   form(method='POST' action='')
@@ -14,11 +14,6 @@ block content
         legend Insertion point
         label(for='time') Time:
         input#time(type='number' min=1 value=35000 placeholder='In microseconds, seconds or minutes' name='time' required='true')
-        label(for='unit') Unit:
-        select#unit(type='select', placeholder='Select unit' name='unit' required='true')
-          option(value='ms' selected='true') ms
-          option(value='sec') sec
-          option(value='min') min
       button(type='submit') Generate spliced manifest link
   
   block result
