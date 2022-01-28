@@ -73,8 +73,8 @@ router.post("/", [
       ACL: "public-read",
     };
 
-    const url = s3.createPresignedPost(fileParams);
-    res.render("link", { link: JSON.stringify(url) });
+    const url = s3.getSignedUrl("putObject", fileParams);
+    res.render("link", { link: url });
   },
 ]);
 
