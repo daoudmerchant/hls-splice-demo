@@ -2,6 +2,10 @@ const express = require("express");
 const { body, validationResult } = require("express-validator");
 const HLSSpliceVod = require("@eyevinn/hls-splice");
 const AWS = require("aws-sdk");
+AWS.config.update({
+  accessKey: "AKIAXPBOKAZ6LE2NLP5G",
+  secretAccessKey: "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",
+});
 
 // TEST
 const fs = require("fs");
