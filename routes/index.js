@@ -94,7 +94,7 @@ router.post("/", [
       if (err) return next(err);
       alert("File write success");
     });
-    fs.readFile(`tmp/${fileName}`, (err, data) => {
+    fs.readFile(`app/tmp/${fileName}`, (err, data) => {
       if (err) return next(err);
       alert("File read success");
       res.send(data.toString());
