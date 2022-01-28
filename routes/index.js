@@ -1,8 +1,7 @@
 const express = require("express");
 const { body, validationResult } = require("express-validator");
 const HLSSpliceVod = require("@eyevinn/hls-splice");
-// const AWS = require("aws-sdk");
-// AWS.config.update({ signatureVersion: "v4" });
+const AWS = require("aws-sdk");
 
 // TEST
 const fs = require("fs");
