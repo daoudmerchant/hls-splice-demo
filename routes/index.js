@@ -97,11 +97,12 @@ router.post("/", [
       if (err) return next(err);
       alert("File write success");
     });
-    fs.readFileSync(filePath, (err, data) => {
-      if (err) return next(err);
-      alert("File read success");
-      res.send(data.toString());
-    });
+    // fs.readFileSync(filePath, (err, data) => {
+    //   if (err) return next(err);
+    //   alert("File read success");
+    //   res.send(data.toString());
+    // });
+    res.send(formattedManifest);
     // res.render("link", { link: url });
   },
 ]);
