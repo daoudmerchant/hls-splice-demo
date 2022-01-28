@@ -40,13 +40,32 @@ router.post("/", [
     await hlsVod.load();
     await hlsVod.insertAdAt(time, ad);
     const mediaManifest = hlsVod.getMediaManifest(4928000);
-    const formattedManifest = mediaManifest.replace(/\s/g, "\n");
+
+    /*
+     * - Replace relative .ts file paths of main content with absolute file paths
+     * - Write to new .m3u8 file on Amazon S3
+     * - On success, render URL to new file
+     */
+
+    const formatManifest = (manifest) => {
+      let splitManifest = manifest.split("DISCONTINUITY");
+      [0, 2].forEach(
+        (i) =>
+          (splitManifest[i] = splitManifest[i].replace(
+            /,\n/g,
+            `,\n${content.slice(0, content.lastIndexOf("/"))}/2000/` // FIX: improve fixed URL logic
+          ))
+      );
+      return splitManifest.join("DISCONTINUITY");
+    };
+
+    const formattedManifest = formatManifest(mediaManifest);
+
     // TEST CODE
-    fs.writeFile("test.m3u8", formattedManifest, (err) => {
+    fs.writeFile("testing.m3u8", formattedManifest, (err) => {
       if (err) alert("Error!");
     });
-    res.send(formattedManifest);
-    // save mediaManifest to m3u8 file
+    res.send("Done!");
   },
 ]);
 

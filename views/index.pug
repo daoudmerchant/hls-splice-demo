@@ -8,11 +8,9 @@ block content
     .form-group
       label(for='content') Content:
       input#content.form-control(type='text', placeholder='Paste main .m3u8 link here' value=(content || 'https://maitv-vod.lab.eyevinn.technology/stswe17-ozer.mp4/master.m3u8') name='content' required='true')
-      label(for='ad') Ad:
+      label.pt-2(for='ad') Ad:
       input#ad.form-control(type='text', placeholder='Paste advert .m3u8 link here' value=(ad || 'https://maitv-vod.lab.eyevinn.technology/ads/apotea-15s.mp4/master.m3u8') name='ad' required='true')
-    fieldset.form-group
-      legend Insertion point
-      label(for='time') Time (in ms):
+      label.pt-2(for='time') Insertion point (in ms):
       input#time.form-control(type='number' min=1 value=(time || 10000) placeholder='In microseconds' name='time' required='true')
     button.btn.btn-primary(type='submit') Generate spliced manifest link
 
