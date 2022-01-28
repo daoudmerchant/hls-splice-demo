@@ -84,7 +84,10 @@ router.post("/", [
       ACL: "public-read",
     };
 
-    const url = s3.getSignedUrl("putObject", fileParams);
+    const url = s3.getSignedUrl("putObject", fileParams, (err, data) => {
+      res.send(data);
+      return;
+    });
 
     res.render("link", { link: url });
 
