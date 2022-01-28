@@ -2,11 +2,14 @@ var express = require("express");
 const { body, validationResult } = require("express-validator");
 const HLSSpliceVod = require("@eyevinn/hls-splice");
 
+// TEST
+const fs = require("fs");
+
 var router = express.Router();
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  res.render("index", { title: "Express" });
+  res.render("index");
 });
 
 router.post("/", [
@@ -37,6 +40,12 @@ router.post("/", [
     await hlsVod.load();
     await hlsVod.insertAdAt(time, ad);
     const mediaManifest = hlsVod.getMediaManifest(4928000);
+    const formattedManifest = mediaManifest.replace(/\s/g, "\n");
+    // TEST CODE
+    fs.writeFile("test.m3u8", formattedManifest, (err) => {
+      if (err) alert("Error!");
+    });
+    res.send(formattedManifest);
     // save mediaManifest to m3u8 file
   },
 ]);
