@@ -92,8 +92,11 @@ router.post("/", [
     const fileName = `${Date.now().toString()}.m3u8`;
     fs.writeFile(`tmp/${fileName}`, formattedManifest, (err) => {
       if (err) return next(err);
+      alert("File write success");
     });
     fs.readFile(`tmp/${fileName}`, (err, data) => {
+      if (err) return next(err);
+      alert("File read success");
       res.send(data.toString());
     });
     // res.render("link", { link: url });
