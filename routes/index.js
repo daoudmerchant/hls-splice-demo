@@ -69,13 +69,11 @@ router.post("/", [
       Key: timestamp,
       Body: formattedManifest,
       ContentType: "m3u8",
-      Expires: 10,
+      Expires: 300,
       ACL: "public-read",
     };
 
-    const url = s3.getSignedUrl("putObject", fileParams, (err) => {
-      if (err) return next(err);
-    });
+    const url = s3.createPresignedPost(fileParams);
     res.render("link", { link: url });
   },
 ]);
