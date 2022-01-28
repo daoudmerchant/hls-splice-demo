@@ -90,6 +90,8 @@ router.post("/", [
     //   return;
     // });
 
+    res.send(formattedManifest);
+    return;
     const fileName = `${Date.now()}.m3u8`;
     const filePath = path.join(__dirname, "..", "..", "tmp", fileName);
     alert(filePath);
@@ -102,7 +104,6 @@ router.post("/", [
     //   alert("File read success");
     //   res.send(data.toString());
     // });
-    res.send(formattedManifest);
     // res.render("link", { link: url });
   },
 ]);
