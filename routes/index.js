@@ -1,8 +1,8 @@
 const express = require("express");
 const { body, validationResult } = require("express-validator");
 const HLSSpliceVod = require("@eyevinn/hls-splice");
-const AWS = require("aws-sdk");
-AWS.config.update({ signatureVersion: "v4" });
+// const AWS = require("aws-sdk");
+// AWS.config.update({ signatureVersion: "v4" });
 
 // TEST
 const fs = require("fs");
@@ -63,6 +63,8 @@ router.post("/", [
 
     const formattedManifest = formatManifest(mediaManifest);
 
+    /* Amazon S3 - constant signing error, Heroku instance in different timezone than S3?
+
     const s3 = new AWS.S3({
       endpoint: "s3-eu-north-1.amazonaws.com",
       signatureVersion: "v4",
@@ -79,7 +81,16 @@ router.post("/", [
     };
 
     const url = s3.getSignedUrl("putObject", fileParams);
-    res.render("link", { link: url });
+
+    */
+    const fileName = `${Date.now().toString()}.m3u8`;
+    fs.writeFile(fileName, formattedManifest, (err) => {
+      if (err) return next(err);
+    });
+
+    res.redirect(`https://guarded-eyrie-72660.herokuapp.com/tmp/${fileName}`);
+
+    // res.render("link", { link: url });
   },
 ]);
 
