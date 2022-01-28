@@ -1,11 +1,12 @@
-var express = require("express");
+const express = require("express");
 const { body, validationResult } = require("express-validator");
 const HLSSpliceVod = require("@eyevinn/hls-splice");
+const AWS = require("aws-sdk");
 
 // TEST
 const fs = require("fs");
 
-var router = express.Router();
+const router = express.Router();
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -61,11 +62,23 @@ router.post("/", [
 
     const formattedManifest = formatManifest(mediaManifest);
 
-    // TEST CODE
-    fs.writeFile("testing.m3u8", formattedManifest, (err) => {
-      if (err) alert("Error!");
+    const s3 = new AWS.S3();
+    const timestamp = Date.now().toString();
+    const fileParams = {
+      Bucket: "eyevinn",
+      Key: timestamp,
+      Body: formattedManifest,
+      ContentType: "m3u8",
+      Expires: 10,
+      ACL: "public-read",
+    };
+
+    s3.getSignedUrl("putObject", fileParams, (err) => {
+      if (err) return next(err);
+      res.render("link", {
+        link: `https://eyevinn.s3.amazonaws.com/${timestamp}`,
+      });
     });
-    res.send("Done!");
   },
 ]);
 
