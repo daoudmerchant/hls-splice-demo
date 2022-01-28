@@ -84,7 +84,7 @@ router.post("/", [
 
     */
     const fileName = `${Date.now().toString()}.m3u8`;
-    fs.writeFile(fileName, formattedManifest, (err) => {
+    fs.writeFile(`tmp/${fileName}`, formattedManifest, (err) => {
       if (err) return next(err);
     });
 
