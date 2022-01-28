@@ -90,11 +90,12 @@ router.post("/", [
     // });
 
     const fileName = `${Date.now().toString()}.m3u8`;
-    fs.writeFile(`tmp/${fileName}`, formattedManifest, (err) => {
+    const filePath = path.join(__dirname, "..", "..", "tmp", fileName);
+    fs.writeFile(filePath, formattedManifest, (err) => {
       if (err) return next(err);
       alert("File write success");
     });
-    fs.readFile(`app/tmp/${fileName}`, (err, data) => {
+    fs.readFile(filePath, (err, data) => {
       if (err) return next(err);
       alert("File read success");
       res.send(data.toString());
