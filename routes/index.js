@@ -74,7 +74,7 @@ router.post("/", [
     };
 
     const url = s3.createPresignedPost(fileParams);
-    res.render("link", { link: url });
+    res.render("link", { link: JSON.stringify(url) });
   },
 ]);
 
