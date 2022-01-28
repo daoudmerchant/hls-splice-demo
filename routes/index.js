@@ -72,14 +72,14 @@ router.post("/", [
     const timestamp = Date.now().toString();
     const fileParams = {
       Bucket: "eyevinn",
-      Key: timestamp,
+      Key: `${timestamp}.m3u8`,
       Body: formattedManifest,
-      ContentType: "m3u8",
       Expires: 300,
       ACL: "public-read",
     };
 
     const url = s3.getSignedUrl("putObject", fileParams);
+
     res.render("link", { link: url });
 
     // const fileName = `${Date.now().toString()}.m3u8`;
