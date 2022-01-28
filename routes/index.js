@@ -62,7 +62,8 @@ router.post("/", [
 
     const formattedManifest = formatManifest(mediaManifest);
 
-    // Amazon S3 - constant signing error, Heroku instance in different timezone than S3?
+    // Amazon S3 - constant signing error, content type doesn't exist?
+    // https://www.ibm.com/docs/en/aspera-on-cloud?topic=resources-aws-s3-content-types
 
     const s3 = new AWS.S3({
       endpoint: "s3-eu-north-1.amazonaws.com",
@@ -75,6 +76,7 @@ router.post("/", [
       Key: `${timestamp}.m3u8`,
       Body: formattedManifest,
       Expires: 300,
+      ContentType: "application/x-mpegURL",
       ACL: "public-read",
     };
 
