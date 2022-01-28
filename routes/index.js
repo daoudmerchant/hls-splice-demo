@@ -73,15 +73,10 @@ router.post("/", [
       ACL: "public-read",
     };
 
-    s3.getSignedUrl("putObject", fileParams, (err, data) => {
+    const url = s3.getSignedUrl("putObject", fileParams, (err) => {
       if (err) return next(err);
-      const returnData = {
-        signedRequest: data,
-        url: `https://eyevinn.s3.amazonaws.com/${timestamp}.m3u8`,
-      };
-      res.write(JSON.stringify(returnData));
-      res.end();
     });
+    res.render("link", { link: url });
   },
 ]);
 
