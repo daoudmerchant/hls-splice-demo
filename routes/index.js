@@ -66,35 +66,37 @@ router.post("/", [
 
     const formattedManifest = formatManifest(mediaManifest);
 
-    // Amazon S3 - constant signing error, content type doesn't exist?
+    // Amazon S3 - constant signing error, content type doesn't exist? Wrong timezone?
     // https://www.ibm.com/docs/en/aspera-on-cloud?topic=resources-aws-s3-content-types
 
-    const s3 = new AWS.S3({
-      endpoint: "s3-eu-north-1.amazonaws.com",
-      signatureVersion: "v4",
-      region: "eu-north-1",
-    });
-    const timestamp = Date.now().toString();
-    const fileParams = {
-      Bucket: "eyevinn",
-      Key: `${timestamp}.m3u8`,
-      Body: formattedManifest,
-      Expires: 300,
-      ContentType: "application/x-mpegURL",
-      ACL: "public-read",
-    };
-
-    const url = s3.getSignedUrl("putObject", fileParams, (err, data) => {
-      res.send(data);
-      return;
-    });
-
-    res.render("link", { link: url });
-
-    // const fileName = `${Date.now().toString()}.m3u8`;
-    // fs.writeFile(`tmp/${fileName}`, formattedManifest, (err) => {
-    //   if (err) return next(err);
+    // const s3 = new AWS.S3({
+    //   endpoint: "s3-eu-north-1.amazonaws.com",
+    //   signatureVersion: "v4",
+    //   region: "eu-north-1",
     // });
+    // const timestamp = Date.now().toString();
+    // const fileParams = {
+    //   Bucket: "eyevinn",
+    //   Key: `${timestamp}.m3u8`,
+    //   Body: formattedManifest,
+    //   Expires: 300,
+    //   ContentType: "application/x-mpegURL",
+    //   ACL: "public-read",
+    // };
+
+    // s3.getSignedUrl("putObject", fileParams, (err, data) => {
+    //   res.send(data);
+    //   return;
+    // });
+
+    const fileName = `${Date.now().toString()}.m3u8`;
+    fs.writeFile(`tmp/${fileName}`, formattedManifest, (err) => {
+      if (err) return next(err);
+    });
+    fs.readFile(`tmp/${fileName}`, (err, data) => {
+      res.send(data.toString());
+    });
+    // res.render("link", { link: url });
   },
 ]);
 
