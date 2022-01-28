@@ -76,7 +76,7 @@ router.post("/", [
     s3.getSignedUrl("putObject", fileParams, (err) => {
       if (err) return next(err);
       res.render("link", {
-        link: `https://eyevinn.s3.amazonaws.com/${timestamp}`,
+        link: `https://eyevinn.s3.amazonaws.com/${timestamp}.m3u8`,
       });
     });
   },
