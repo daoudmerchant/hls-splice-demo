@@ -91,6 +91,7 @@ router.post("/", [
 
     const fileName = `${Date.now().toString()}.m3u8`;
     const filePath = path.join(__dirname, "..", "..", "tmp", fileName);
+    alert(filePath);
     fs.writeFile(filePath, formattedManifest, (err) => {
       if (err) return next(err);
       alert("File write success");
