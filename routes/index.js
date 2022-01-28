@@ -62,7 +62,7 @@ router.post("/", [
 
     const formattedManifest = formatManifest(mediaManifest);
 
-    const s3 = new AWS.S3({ signatureVersion: "v4" });
+    const s3 = new AWS.S3({ signatureVersion: "v4", region: "eu-north-1" });
     const timestamp = Date.now().toString();
     const fileParams = {
       Bucket: "eyevinn",
