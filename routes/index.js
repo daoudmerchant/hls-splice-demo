@@ -1,15 +1,13 @@
 const express = require("express");
 const { body, validationResult } = require("express-validator");
 const HLSSpliceVod = require("@eyevinn/hls-splice");
-const AWS = require("aws-sdk");
-AWS.config.update({
-  accessKey: "AKIAXPBOKAZ6LE2NLP5G",
-  secretAccessKey: "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",
-});
+const { Octokit } = require("@octokit/rest");
 
-// TEST
-const fs = require("fs");
-const path = require("path");
+// const AWS = require("aws-sdk");
+
+const octokit = new Octokit({
+  auth: "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",
+});
 
 const router = express.Router();
 
@@ -49,8 +47,8 @@ router.post("/", [
 
     /*
      * - Replace relative .ts file paths of main content with absolute file paths
-     * - Write to new .m3u8 file on Amazon S3
-     * - On success, render URL to new file
+     * - Write to new .m3u8 file on Github
+     * - On success, pass URL of new file to link view
      */
 
     const formatManifest = (manifest) => {
@@ -66,6 +64,23 @@ router.post("/", [
     };
 
     const formattedManifest = formatManifest(mediaManifest);
+
+    // Upload to GitHub
+
+    const timestamp = Date.now();
+    const fileName = `${timestamp}.m3u8`;
+    try {
+      const { data } = await octokit.repos.createOrUpdateFileContents({
+        owner: "videosplicedemo",
+        repo: "splicedmanifests",
+        path: fileName,
+        message: `New spliced manifest uploaded at ${timestamp.toString()}`,
+        content: formattedManifest,
+      });
+      res.send(data);
+    } catch (err) {
+      if (err) return next(err);
+    }
 
     // Amazon S3 - constant signing error, content type doesn't exist? Wrong timezone?
     // https://www.ibm.com/docs/en/aspera-on-cloud?topic=resources-aws-s3-content-types
@@ -89,22 +104,6 @@ router.post("/", [
     //   res.send(data);
     //   return;
     // });
-
-    res.send(formattedManifest);
-    return;
-    const fileName = `${Date.now()}.m3u8`;
-    const filePath = path.join(__dirname, "..", "..", "tmp", fileName);
-    alert(filePath);
-    fs.writeFileSync(filePath, formattedManifest, (err) => {
-      if (err) return next(err);
-      alert("File write success");
-    });
-    // fs.readFileSync(filePath, (err, data) => {
-    //   if (err) return next(err);
-    //   alert("File read success");
-    //   res.send(data.toString());
-    // });
-    // res.render("link", { link: url });
   },
 ]);
 

@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@eyevinn/hls-splice": "^0.3.5",
+    "@octokit/rest": "^18.12.0",
     "aws-sdk": "^2.1065.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
