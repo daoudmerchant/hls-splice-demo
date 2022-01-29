@@ -2,6 +2,7 @@ const express = require("express");
 const { body, validationResult } = require("express-validator");
 const HLSSpliceVod = require("@eyevinn/hls-splice");
 const { Octokit } = require("@octokit/rest");
+const { Base64 } = require("js-base64");
 
 // const AWS = require("aws-sdk");
 
@@ -69,13 +70,14 @@ router.post("/", [
 
     const timestamp = Date.now();
     const fileName = `${timestamp}.m3u8`;
+    const encodedManifest = Base64.encode(formattedManifest);
     try {
       const { data } = await octokit.repos.createOrUpdateFileContents({
         owner: "videosplicedemo",
         repo: "splicedmanifests",
         path: fileName,
         message: `New spliced manifest uploaded at ${timestamp.toString()}`,
-        content: formattedManifest,
+        content: encodedManifest,
       });
       res.send(data);
     } catch (err) {
