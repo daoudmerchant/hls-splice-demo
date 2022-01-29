@@ -72,14 +72,21 @@ router.post("/", [
     const fileName = `${timestamp}.m3u8`;
     const encodedManifest = Base64.encode(formattedManifest);
     try {
-      const { data } = await octokit.repos.createOrUpdateFileContents({
+      await octokit.repos.createOrUpdateFileContents({
         owner: "videosplicedemo",
         repo: "splicedmanifests",
         path: fileName,
         message: `New spliced manifest uploaded at ${timestamp.toString()}`,
         content: encodedManifest,
       });
-      res.send(data);
+      const url = `https://raw.githubusercontent.com/videosplicedemo/splicedmanifests/main/${timestamp}.m3u8`;
+      const copyText = () => {
+        navigator.clipboard.write(url);
+      };
+      res.render("link", {
+        url,
+        copyText,
+      });
     } catch (err) {
       if (err) return next(err);
     }

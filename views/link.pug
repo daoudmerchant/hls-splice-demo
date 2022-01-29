@@ -1,5 +1,10 @@
 extends layout 
 
 block content
-  p Your link is
-  p.border #{link}
+  p Your new manifest stream is:
+  p.border.p-2.text-center.font-weight-bold#link(onclick= copyText) #{url}
+  br
+  p 
+    | Paste in the 
+    a(href="https://web.player.eyevinn.technology/" target="_blank") Eyevinn Video Player 
+    | to watch the newly spliced content!
