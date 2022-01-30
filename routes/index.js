@@ -9,7 +9,7 @@ const router = express.Router();
 
 const octokit = new Octokit({
   // Test account, would normally store credentials privately
-  auth: "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",
+  auth: "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",
 });
 
 // GET home page
