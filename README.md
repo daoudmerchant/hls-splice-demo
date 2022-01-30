@@ -171,6 +171,11 @@ Time:  0s -------|^|----------- 3m15s  | 1 | min | 21 | secs  [ ] At start [ ] A
 
 - **Presentation, click link to copy etc.**
 
+## Future code maintenance
+
+- Fully unit test
+- Refactor in TypeScript
+
 ## Conclusion
 
 This was an enlightening project, teaching me a lot about manifest files, their purpose, the specific content of spliced manifest files, use of the `HSLSpliceVod` and server-side processing (this was my first ever Node JS app), learning about writing files to 3rd party services along the way.
