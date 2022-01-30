@@ -3,28 +3,29 @@ const { body, validationResult } = require("express-validator");
 const HLSSpliceVod = require("@eyevinn/hls-splice");
 const { Octokit } = require("@octokit/rest");
 const { Base64 } = require("js-base64");
-
 // const AWS = require("aws-sdk");
-
-const octokit = new Octokit({
-  auth: "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",
-});
 
 const router = express.Router();
 
-/* GET home page. */
-router.get("/", function (req, res, next) {
+const octokit = new Octokit({
+  // Test account, would normally store credentials privately
+  auth: "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",
+});
+
+// GET home page
+router.get("/", function (req, res) {
   res.render("index");
 });
 
+// POST form
 router.post("/", [
   // validate and sanitise text inputs
   body("content")
     .trim()
     .isURL()
-    .withMessage("Main video mmust be a valid URL")
+    .withMessage("Main content must be a valid URL")
     .matches(/m3u8$/)
-    .withMessage("Main video must be a valid playlist file"),
+    .withMessage("Main content must be a valid playlist file"),
   body("ad")
     .trim()
     .isURL()
@@ -39,6 +40,7 @@ router.post("/", [
       res.render("index", { ...req.body, errors: errors.array() });
       return;
     }
+
     // No errors, proceed with splicing
     const { content, ad, time } = req.body;
     const hlsVod = new HLSSpliceVod(content);
@@ -46,19 +48,14 @@ router.post("/", [
     await hlsVod.insertAdAt(time, ad);
     const mediaManifest = hlsVod.getMediaManifest(4928000);
 
-    /*
-     * - Replace relative .ts file paths of main content with absolute file paths
-     * - Write to new .m3u8 file on Github
-     * - On success, pass URL of new file to link view
-     */
-
+    // Format manifest (TODO: fix insertion of absolute paths)
     const formatManifest = (manifest) => {
       let splitManifest = manifest.split("DISCONTINUITY");
       [0, 2].forEach(
         (i) =>
           (splitManifest[i] = splitManifest[i].replace(
             /,\n/g,
-            `,\n${content.slice(0, content.lastIndexOf("/"))}/2000/` // FIX: improve fixed URL logic
+            `,\n${content.slice(0, content.lastIndexOf("/"))}/2000/` // FIX
           ))
       );
       return splitManifest.join("DISCONTINUITY");
@@ -66,11 +63,12 @@ router.post("/", [
 
     const formattedManifest = formatManifest(mediaManifest);
 
-    // Upload to GitHub
-
+    // Prepare for upload
     const timestamp = Date.now();
     const fileName = `${timestamp}.m3u8`;
     const encodedManifest = Base64.encode(formattedManifest);
+
+    // Upload to Github
     try {
       await octokit.repos.createOrUpdateFileContents({
         owner: "videosplicedemo",
@@ -80,19 +78,15 @@ router.post("/", [
         content: encodedManifest,
       });
       const url = `https://raw.githubusercontent.com/videosplicedemo/splicedmanifests/main/${timestamp}.m3u8`;
-      const copyText = () => {
-        navigator.clipboard.write(url);
-      };
-      res.render("link", {
-        url,
-        copyText,
-      });
+      res.render("link", { url });
     } catch (err) {
       if (err) return next(err);
     }
 
-    // Amazon S3 - constant signing error, content type doesn't exist? Wrong timezone?
-    // https://www.ibm.com/docs/en/aspera-on-cloud?topic=resources-aws-s3-content-types
+    // FIX: Amazon S3 - constant signing error, reasons include:
+    //   - Invalid credentials (checked)
+    //   - Invalid character in credentials (checked)
+    //   - Mismatch between server and S3 time zones
 
     // const s3 = new AWS.S3({
     //   endpoint: "s3-eu-north-1.amazonaws.com",
