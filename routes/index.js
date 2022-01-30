@@ -8,8 +8,7 @@ const { Base64 } = require("js-base64");
 const router = express.Router();
 
 const octokit = new Octokit({
-  // Test account, would normally store credentials privately
-  auth: "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",
+  auth: "accesskey",
 });
 
 // GET home page
